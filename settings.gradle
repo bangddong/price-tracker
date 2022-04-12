@@ -1,0 +1,8 @@
+rootProject.name = 'price-tracker'
+include 'tracker-api'
+include 'tracker-batch'
+include 'tracker-core'
+include 'tracker-api'
+include 'tracker-batch'
+include 'tracker-core'
+
