@@ -1,0 +1,17 @@
+spring:
+  profiles:
+    default: dev
+  datasource:
+    url: jdbc:mysql://localhost:3306/tracker_db?useSSL=false&serverTimezone=Asia/Seoul
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: ''
+  jpa:
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+    hibernate:
+      ddl-auto: update
