@@ -1,24 +1,43 @@
 package com.bd.tracker.api.controller;
 
 import com.bd.tracker.api.service.BatchInfoService;
-import com.bd.tracker.core.dto.BatchInfoDto;
+import com.bd.tracker.core.dto.BatchInfoResponse;
+import com.bd.tracker.core.dto.PriceInfoRequest;
+import com.bd.tracker.core.dto.ScrapInfoRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RequestMapping("/api")
 @RestController
+@Slf4j
 public class ApiBatchInfoController {
 
     private final BatchInfoService batchInfoService;
 
     @GetMapping("/scrapInfo")
-    public List<BatchInfoDto> getScrapInfo() {
-        return batchInfoService.getScrapInfo();
+    public List<BatchInfoResponse> getScrapInfo() {
+        return batchInfoService.getScrapInfo()
+                .stream()
+                .map(BatchInfoResponse::from)
+                .collect(Collectors.toList());
     }
+
+    @PostMapping("/scrapInfo")
+    public Boolean createScrapInfo(@RequestBody ScrapInfoRequest scrapInfoRequest) {
+        for (PriceInfoRequest dto : scrapInfoRequest.getPriceInfoList()) {
+            log.info("[{}][{}] 가격 정보 : {}원",
+                    dto.getBatchInfoDto().getCategory(), dto.getBatchInfoDto().getProductNm(), dto.getPrice()
+            );
+        }
+
+        return true;
+    }
+
+    // TODO : 신규 스크래핑 추가 PostMapping 필요
 
 }
