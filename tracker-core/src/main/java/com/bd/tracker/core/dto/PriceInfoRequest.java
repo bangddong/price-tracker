@@ -5,12 +5,12 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class PriceInfoDto {
+public class PriceInfoRequest {
 
-    private final BatchInfoDto batchInfoDto;
+    private final BatchInfoResponse batchInfoDto;
     private final Integer price;
 
-    public static PriceInfoDto of(BatchInfoDto batchInfoDto, Integer price) {
-        return new PriceInfoDto(batchInfoDto, price);
+    public static PriceInfoRequest of(BatchInfoResponse batchInfoResponse, Integer price) {
+        return new PriceInfoRequest(batchInfoResponse, price);
     }
 }

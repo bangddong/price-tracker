@@ -20,16 +20,16 @@ public class BatchInfo {
     private Long id;
 
     @Column(nullable = false)
-    private String productNm;
+    private String url;
+
+    @Column(nullable = false)
+    private String cssQuery;
 
     @Column(nullable = false)
     private String category;
 
     @Column(nullable = false)
-    private String url;
-
-    @Column(nullable = false)
-    private String cssQuery;
+    private String productNm;
 
     @Column(nullable = false, columnDefinition = "varchar(1) default 'Y'")
     private String searchYn;
