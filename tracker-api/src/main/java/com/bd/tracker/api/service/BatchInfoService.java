@@ -17,7 +17,8 @@ public class BatchInfoService {
 
     @Transactional
     public List<BatchInfoDto> getScrapInfo() {
-        return batchInfoRepository.findAllBySearchYn("Y").stream() // TODO 나중에 하드코딩 지우자
+        return batchInfoRepository.findAll().stream()
+                .filter(batchInfo -> batchInfo.getSearchYn().equals("Y"))
                 .map(BatchInfoDto::of)
                 .collect(Collectors.toList());
     }
