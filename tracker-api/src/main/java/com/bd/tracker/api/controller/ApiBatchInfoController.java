@@ -2,7 +2,6 @@ package com.bd.tracker.api.controller;
 
 import com.bd.tracker.api.service.BatchInfoService;
 import com.bd.tracker.core.dto.BatchInfoResponse;
-import com.bd.tracker.core.dto.PriceInfoRequest;
 import com.bd.tracker.core.dto.ScrapInfoRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,12 +28,8 @@ public class ApiBatchInfoController {
 
     @PostMapping("/scrapInfo")
     public Boolean createScrapInfo(@RequestBody ScrapInfoRequest scrapInfoRequest) {
-        for (PriceInfoRequest dto : scrapInfoRequest.getPriceInfoList()) {
-            log.info("[{}][{}] 가격 정보 : {}원",
-                    dto.getBatchInfoDto().getCategory(), dto.getBatchInfoDto().getProductNm(), dto.getPrice()
-            );
-        }
-
+        // TODO : forEach 저장과 일괄 저장의 성능상 차이는 ?
+        scrapInfoRequest.getPriceInfoList().forEach(batchInfoService::createScrapInfo);
         return true;
     }
 

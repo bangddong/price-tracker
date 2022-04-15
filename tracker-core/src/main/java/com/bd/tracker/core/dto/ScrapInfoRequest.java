@@ -11,11 +11,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ScrapInfoRequest {
 
-    private final List<PriceInfoRequest> priceInfoList;
+    private final List<ScrapInfoDto> priceInfoList;
 
     @JsonCreator
     public static ScrapInfoRequest of(
-            @JsonProperty("priceInfoList") List<PriceInfoRequest> priceInfoList
+            @JsonProperty("priceInfoList") List<ScrapInfoDto> priceInfoList
     ) {
         return new ScrapInfoRequest(priceInfoList);
     }

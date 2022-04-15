@@ -1,7 +1,7 @@
 package com.bd.tracker.batch.coupang.job;
 
 import com.bd.tracker.core.dto.BatchInfoResponse;
-import com.bd.tracker.core.dto.PriceInfoRequest;
+import com.bd.tracker.core.dto.ScrapInfoDto;
 import com.bd.tracker.core.dto.ScrapInfoRequest;
 import lombok.extern.log4j.Log4j2;
 import org.jsoup.Jsoup;
@@ -38,7 +38,7 @@ public class ScrapPriceTasklet implements Tasklet {
             return RepeatStatus.FINISHED;
         }
 
-        List<PriceInfoRequest> priceInfoList = new ArrayList<>();
+        List<ScrapInfoDto> priceInfoList = new ArrayList<>();
         Document doc = null;
 
         for (BatchInfoResponse dto : batchInfoList) {
@@ -61,7 +61,7 @@ public class ScrapPriceTasklet implements Tasklet {
                 continue;
             }
 
-            priceInfoList.add(PriceInfoRequest.of(dto, Integer.parseInt(price.replaceAll("[^0-9]", ""))));
+            priceInfoList.add(ScrapInfoDto.of(dto.getId(), Integer.parseInt(price.replaceAll("[^0-9]", ""))));
         }
 
         ScrapInfoRequest request = new ScrapInfoRequest(priceInfoList);

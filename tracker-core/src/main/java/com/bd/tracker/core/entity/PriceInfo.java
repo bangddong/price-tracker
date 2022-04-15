@@ -1,6 +1,5 @@
 package com.bd.tracker.core.entity;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -33,10 +32,16 @@ public class PriceInfo {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-    @Builder
-    public PriceInfo(BatchInfo batchInfo, Integer price) {
+    private PriceInfo(BatchInfo batchInfo, Integer price) {
         this.batchInfo = batchInfo;
         this.price = price;
+    }
+
+    public static PriceInfo of(
+            BatchInfo batchInfo,
+            Integer price
+    ) {
+        return new PriceInfo(batchInfo, price);
     }
 
 }

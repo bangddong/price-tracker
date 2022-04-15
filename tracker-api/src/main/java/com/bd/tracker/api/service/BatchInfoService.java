@@ -1,7 +1,10 @@
 package com.bd.tracker.api.service;
 
 import com.bd.tracker.core.dto.BatchInfoDto;
+import com.bd.tracker.core.dto.ScrapInfoDto;
+import com.bd.tracker.core.entity.BatchInfo;
 import com.bd.tracker.core.repository.BatchInfoRepository;
+import com.bd.tracker.core.repository.PriceInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +17,7 @@ import java.util.stream.Collectors;
 public class BatchInfoService {
 
     private final BatchInfoRepository batchInfoRepository;
+    private final PriceInfoRepository priceInfoRepository;
 
     @Transactional
     public List<BatchInfoDto> getScrapInfo() {
@@ -21,6 +25,12 @@ public class BatchInfoService {
                 .filter(batchInfo -> batchInfo.getSearchYn().equals("Y"))
                 .map(BatchInfoDto::of)
                 .collect(Collectors.toList());
+    }
+
+    public boolean createScrapInfo(ScrapInfoDto scrapInfoDto) {
+        BatchInfo batchInfo = batchInfoRepository.getById(scrapInfoDto.getBatchId());
+        priceInfoRepository.save(scrapInfoDto.toEntity(batchInfo));
+        return true;
     }
 
 }
