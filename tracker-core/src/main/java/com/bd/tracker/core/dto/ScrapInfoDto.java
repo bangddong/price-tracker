@@ -1,7 +1,7 @@
 package com.bd.tracker.core.dto;
 
 import com.bd.tracker.core.entity.BatchInfo;
-import com.bd.tracker.core.entity.PriceInfo;
+import com.bd.tracker.core.entity.ScrapInfo;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -16,8 +16,8 @@ public class ScrapInfoDto {
         return new ScrapInfoDto(id, price);
     }
 
-    public PriceInfo toEntity(BatchInfo batchInfo) {
-        return PriceInfo.of(batchInfo, price);
+    public ScrapInfo toEntity(BatchInfo batchInfo) {
+        return ScrapInfo.of(batchInfo, price);
     }
 
 }

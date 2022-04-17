@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @EntityListeners(AuditingEntityListener.class)
 @Entity
-public class PriceInfo {
+public class ScrapInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,16 +32,16 @@ public class PriceInfo {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-    private PriceInfo(BatchInfo batchInfo, Integer price) {
+    private ScrapInfo(BatchInfo batchInfo, Integer price) {
         this.batchInfo = batchInfo;
         this.price = price;
     }
 
-    public static PriceInfo of(
+    public static ScrapInfo of(
             BatchInfo batchInfo,
             Integer price
     ) {
-        return new PriceInfo(batchInfo, price);
+        return new ScrapInfo(batchInfo, price);
     }
 
 }

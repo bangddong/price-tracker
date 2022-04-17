@@ -1,6 +1,7 @@
 package com.bd.tracker.core.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -9,7 +10,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@DynamicInsert
+@NoArgsConstructor
+@DynamicInsert // searchYn 디폴트 Y를 위해 설정
 @Getter
 @EntityListeners(AuditingEntityListener.class)
 @Entity
@@ -39,5 +41,26 @@ public class BatchInfo {
 
     @LastModifiedDate
     private LocalDateTime modifiedAt;
+
+    private BatchInfo(
+            String url,
+            String cssQuery,
+            String category,
+            String productNm
+    ) {
+        this.url = url;
+        this.cssQuery = cssQuery;
+        this.category = category;
+        this.productNm = productNm;
+    }
+
+    public static BatchInfo of(
+            String url,
+            String cssQuery,
+            String category,
+            String productNm
+    ) {
+        return new BatchInfo(url, cssQuery, category, productNm);
+    }
 
 }
