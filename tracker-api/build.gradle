@@ -3,6 +3,7 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation('nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect') // 타임리프 레이아웃 라이브러리
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-validation'

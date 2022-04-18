@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="description" content="" />
+<meta name="author" content="" />
+<title>Price Tracker Sample</title>
+<link rel="icon" type="image/x-icon" th:href="@{/assets/favicon.ico}" />
+<!-- 부트스트랩 아이콘 -->
+<link th:href="@{/css/bootstrap-icons.css}" rel="stylesheet" />
+<!-- 부트스트랩 코어 CSS -->
+<link th:href="@{/css/styles.css}" rel="stylesheet" />
+<!-- 부트스트랩 코어 JS-->
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
+<!-- 커스텀 코어 JS -->
+<script th:src="@{/js/scripts.js}"></script>
+
+<th:block layout:fragment="script"></th:block>
+<th:block layout:fragment="css"></th:block>
+<body>
+  <div th:replace="layouts/fragments/top-nav::top-nav"></div>
+  <div th:replace="layouts/fragments/header::header"></div>
+  <div layout:fragment="content" class="content"></div>
+  <div th:replace="layouts/fragments/footer::footer"></div>
+</body>
+</html>
