@@ -26,9 +26,9 @@ public class ApiBatchInfoController {
                 .collect(Collectors.toList());
     }
 
-    // TODO : 신규 스크래핑 추가 PostMapping 필요
+    // TODO : BatchInfoRequest Valid 필요
     @PostMapping("/batchInfo")
-    public void createBatchInfo(@RequestBody BatchInfoRequest batchInfoRequest) {
+    public void createBatchInfo(BatchInfoRequest batchInfoRequest) {
         batchInfoService.createBatchInfo(batchInfoRequest);
     }
 

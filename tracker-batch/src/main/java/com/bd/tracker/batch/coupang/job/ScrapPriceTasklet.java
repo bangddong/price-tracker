@@ -27,7 +27,7 @@ public class ScrapPriceTasklet implements Tasklet {
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         WebClient webClient = WebClient.create("http://localhost:8080/api");
         List<BatchInfoResponse> batchInfoList = webClient.get()
-                .uri("/scrapInfo")
+                .uri("/batchInfo")
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<BatchInfoResponse>>() {})
@@ -49,6 +49,7 @@ public class ScrapPriceTasklet implements Tasklet {
             }
             // TODO : 접속 실패시 처리 필요
             // TODO : 첫 번째는 정상가, 만약 할인가가 있을 시 밑으로 가격이 더 있으니 해당 처리 필요
+            // TODO : Elements 로 읽어 Size 로 확인하자.
             Element priceElement = doc.select(dto.getCssQuery()).first();
             if (priceElement == null) {
                 log.info("URL : {}, CssQuery : {}. css 가 존재하지 않습니다.", dto.getUrl(), dto.getCssQuery());
