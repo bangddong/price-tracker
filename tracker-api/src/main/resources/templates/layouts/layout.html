@@ -16,10 +16,11 @@
 <!-- 커스텀 코어 JS -->
 <script th:src="@{/js/scripts.js}"></script>
 
-<th:block layout:fragment="script"></th:block>
 <th:block layout:fragment="css"></th:block>
+<th:block layout:fragment="script"></th:block>
+
 <body>
-  <div th:replace="layouts/fragments/top-nav::top-nav"></div>
+  <div th:replace="layouts/fragments/top_nav::top-nav"></div>
   <div th:replace="layouts/fragments/header::header"></div>
   <div layout:fragment="content" class="content"></div>
   <div th:replace="layouts/fragments/footer::footer"></div>
