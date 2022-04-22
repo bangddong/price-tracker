@@ -20,9 +20,7 @@ public class ScrapPriceConfig {
     private final StepBuilderFactory stepBuilderFactory;
 
     @Bean
-    public Job scrapPriceJob(
-            Step crapPriceStep
-    ) {
+    public Job scrapPriceJob(Step crapPriceStep) {
         return jobBuilderFactory.get("scrapPriceJob")
                 .incrementer(new RunIdIncrementer())
                 .start(crapPriceStep)

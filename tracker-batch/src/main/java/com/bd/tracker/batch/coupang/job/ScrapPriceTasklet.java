@@ -45,23 +45,22 @@ public class ScrapPriceTasklet implements Tasklet {
             try {
                 doc = Jsoup.connect(dto.getUrl()).timeout(5000).get();
             } catch (IOException e) {
-                log.info("타겟 URL : {} , 접속 중 에러가 발생하였습니다. {}", dto.getUrl(), e.getMessage());
+                log.info("타겟 URL : {}, 접속 중 에러가 발생하였습니다. {}", dto.getUrl(), e.getMessage());
             }
-            // TODO : 접속 실패시 처리 필요
-            // TODO : 첫 번째는 정상가, 만약 할인가가 있을 시 밑으로 가격이 더 있으니 해당 처리 필요
-            // TODO : Elements 로 읽어 Size 로 확인하자.
-            Element priceElement = doc.select(dto.getCssQuery()).first();
+            if (doc == null) {
+                log.info("타겟 URL : {}, HTML 문서를 읽지 못했습니다.", dto.getUrl());
+                continue;
+            }
+
+            Element priceElement = doc.select(dto.getCssQuery()).last();
             if (priceElement == null) {
                 log.info("URL : {}, CssQuery : {}. css 가 존재하지 않습니다.", dto.getUrl(), dto.getCssQuery());
                 continue;
+            } else if (priceElement.text().equals("원")) { // 해당 element 는 있으나 가격이 비어있는 경우가 있음
+                priceElement = doc.select(dto.getCssQuery()).first();
             }
 
             String price = priceElement.text();
-            if (!price.contains("원")) {
-                log.info("URL : {}, CssQuery : {}. 가격 정보가 존재하지 않습니다.", dto.getUrl(), dto.getCssQuery());
-                continue;
-            }
-
             priceInfoList.add(ScrapInfoDto.of(dto.getId(), Integer.parseInt(price.replaceAll("[^0-9]", ""))));
         }
 
