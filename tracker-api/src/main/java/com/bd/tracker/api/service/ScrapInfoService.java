@@ -21,4 +21,8 @@ public class ScrapInfoService {
         scrapInfoRepository.save(scrapInfoDto.toEntity(batchInfo));
     }
 
+    public void getScrapInfo() {
+
+    }
+
 }
