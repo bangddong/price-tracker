@@ -6,6 +6,7 @@ import com.bd.tracker.api.exception.GeneralException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -45,7 +46,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handleExceptionInternal(Exception e, ErrorCode errorCode, HttpHeaders headers, HttpStatus status, WebRequest request) {
         return super.handleExceptionInternal(
                 e,
-                ApiErrorResponse.of(false, errorCode.getCode(), errorCode.getMessage(e)),
+                // TODO : 에러 사유에 대한 명확한 메시지가 필요할 수 있으니 차후 수정해보자.
+                ApiErrorResponse.of(false, errorCode.getCode(), errorCode.getMessage()),
                 headers,
                 status,
                 request
