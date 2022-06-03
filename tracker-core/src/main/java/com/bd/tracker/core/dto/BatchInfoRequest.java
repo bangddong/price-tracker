@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @RequiredArgsConstructor
@@ -17,7 +18,7 @@ public class BatchInfoRequest {
     private final String cssQuery;
 
     // TODO : enum custom valid 도입 검토필요
-    @NotBlank
+    @NotNull
     private final ScrapCategory category;
     @NotBlank
     private final String productNm;
