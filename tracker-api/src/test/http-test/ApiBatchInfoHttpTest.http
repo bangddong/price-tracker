@@ -1,0 +1,14 @@
+### 배치 정보를 조회한다.
+GET http://localhost:8080/api/batchInfo
+Accept: application/json
+
+### 배치 정보를 추가한다.
+POST http://localhost:8080/api/batchInfo
+Content-Type: application/json
+
+{
+  "url": "   ",
+  "cssQuery": "total-price",
+  "category": "쿠팡 가격검색",
+  "productNm": "애플워치"
+}
