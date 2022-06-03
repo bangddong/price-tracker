@@ -8,7 +8,7 @@ import lombok.*;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class ApiErrorResponse {
 
-    private final Boolean success;
+    private final boolean success;
     private final Integer errorCode;
     private final String message;
 

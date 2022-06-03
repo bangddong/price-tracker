@@ -45,13 +45,13 @@ public enum ErrorCode {
     }
 
     public String getMessage(Throwable e) {
-        return this.getMessage(this.getMessage() + " - " + e.getMessage());
+        return getMessage(this.getMessage() + " - " + e.getMessage());
     }
 
     public String getMessage(String message) {
         return Optional.ofNullable(message)
                 .filter(Predicate.not(String::isBlank))
-                .orElse(this.getMessage());
+                .orElse(getMessage());
     }
 
 }
