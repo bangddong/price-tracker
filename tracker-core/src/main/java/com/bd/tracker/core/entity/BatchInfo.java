@@ -1,5 +1,6 @@
 package com.bd.tracker.core.entity;
 
+import com.bd.tracker.core.constant.ScrapCategory;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -28,7 +29,8 @@ public class BatchInfo {
     private String cssQuery;
 
     @Column(nullable = false)
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private ScrapCategory category;
 
     @Column(nullable = false)
     private String productNm;
@@ -45,7 +47,7 @@ public class BatchInfo {
     private BatchInfo(
             String url,
             String cssQuery,
-            String category,
+            ScrapCategory category,
             String productNm
     ) {
         this.url = url;
@@ -57,7 +59,7 @@ public class BatchInfo {
     public static BatchInfo of(
             String url,
             String cssQuery,
-            String category,
+            ScrapCategory category,
             String productNm
     ) {
         return new BatchInfo(url, cssQuery, category, productNm);

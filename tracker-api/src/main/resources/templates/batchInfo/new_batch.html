@@ -11,21 +11,18 @@
   </style>
 </th:block>
 <th:block layout:fragment="script">
-  <script th:src="@{/js/validation.js}"></script>
   <script>
     function sendFormData() {
-        let data = document.getElementById("create_batch_form");
-        //TODO : 입력 데이터 1차 검증 필요
-        fetch("/api/batchInfo", {
-            method: "POST",
-            body: new FormData(data),
-        }).then((res) => {
-            if (res.status === 200) {
-                alert("등록되었습니다.");
-            } else {
-                alert("신규 상품 등록에 실패하였습니다.");
-            }
-        }).catch(err => console.error(err));
+        let data = new FormData(document.getElementById("create_batch_form"));
+        const url = "/api/batchInfo";
+
+        let res = postFormToJson(url, data);
+
+        res.then(data => {
+          if (data.success) {
+            alert("등록이 완료되었습니다.");
+          }
+        })
     }
   </script>
 </th:block>
@@ -36,7 +33,10 @@
         <div class="form-group">
           <label for="category" class="col-sm-2 col-form-label">상품 카테고리</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" id="category" name="category" placeholder="상품의 카테고리를 입력하세요.">
+            <select class="form-select" aria-label="Default select example" id="category" name="category">
+              <option value="COUPANG_PRICE" selected> 쿠팡 가격검색</option>
+              <option value="SIMPLE_INFO">일반 정보검색</option>
+            </select>
           </div>
         </div>
         <div class="form-group">

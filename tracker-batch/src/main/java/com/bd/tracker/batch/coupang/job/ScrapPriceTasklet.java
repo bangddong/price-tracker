@@ -27,7 +27,11 @@ public class ScrapPriceTasklet implements Tasklet {
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         WebClient webClient = WebClient.create("http://localhost:8080/api");
         List<BatchInfoResponse> batchInfoList = webClient.get()
-                .uri("/batchInfo")
+                .uri(uriBuilder ->
+                    uriBuilder.path("/batchInfo")
+                            .queryParam("category", "COUPANG_PRICE")
+                            .build()
+                )
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<BatchInfoResponse>>() {})
