@@ -1,5 +1,6 @@
 package com.bd.tracker.core.dto;
 
+import com.bd.tracker.core.constant.ScrapCategory;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -12,7 +13,7 @@ public class BatchInfoResponse {
     private final Long id;
     private final String url;
     private final String cssQuery;
-    private final String category;
+    private final ScrapCategory category;
     private final String productNm;
 
     // 불변객체를 deserialize 시 사용을 위해 별도 어노테이션으로 정의
@@ -21,7 +22,7 @@ public class BatchInfoResponse {
             @JsonProperty("id") Long id,
             @JsonProperty("url") String url,
             @JsonProperty("cssQuery") String cssQuery,
-            @JsonProperty("category") String category,
+            @JsonProperty("category") ScrapCategory category,
             @JsonProperty("productNm") String productNm
     ) {
         return new BatchInfoResponse(id, url, cssQuery, category, productNm);

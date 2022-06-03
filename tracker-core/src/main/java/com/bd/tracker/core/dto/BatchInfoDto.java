@@ -1,5 +1,6 @@
 package com.bd.tracker.core.dto;
 
+import com.bd.tracker.core.constant.ScrapCategory;
 import com.bd.tracker.core.entity.BatchInfo;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ public class BatchInfoDto {
     private final Long id;
     private final String url;
     private final String cssQuery;
-    private final String category;
+    private final ScrapCategory category;
     private final String productNm;
     private final String searchYn;
     private final LocalDateTime createAt;
