@@ -1,6 +1,7 @@
 package com.bd.tracker.batch.coupang.job;
 
 import com.bd.tracker.core.dto.BatchInfoResponse;
+import com.bd.tracker.core.dto.BatchInfoResponseDto;
 import com.bd.tracker.core.dto.ScrapInfoDto;
 import com.bd.tracker.core.dto.ScrapInfoRequest;
 import lombok.extern.log4j.Log4j2;
@@ -26,18 +27,17 @@ public class ScrapPriceTasklet implements Tasklet {
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         WebClient webClient = WebClient.create("http://localhost:8080/api");
-        List<BatchInfoResponse> batchInfoList = webClient.get()
+        BatchInfoResponse batchInfo = webClient.get()
                 .uri(uriBuilder ->
-                    uriBuilder.path("/batchInfo")
-                            .queryParam("category", "COUPANG_PRICE")
+                    uriBuilder.path("/batchInfo/COUPANG_PRICE")
                             .build()
                 )
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<BatchInfoResponse>>() {})
+                .bodyToMono(BatchInfoResponse.class)
                 .block();
 
-        if (batchInfoList == null || batchInfoList.size() == 0) {
+        if (batchInfo == null || batchInfo.getResponseDtoList().size() == 0) {
             log.info("스크랩할 정보가 없습니다.");
             return RepeatStatus.FINISHED;
         }
@@ -45,7 +45,7 @@ public class ScrapPriceTasklet implements Tasklet {
         List<ScrapInfoDto> priceInfoList = new ArrayList<>();
         Document doc = null;
 
-        for (BatchInfoResponse dto : batchInfoList) {
+        for (BatchInfoResponseDto dto : batchInfo.getResponseDtoList()) {
             try {
                 doc = Jsoup.connect(dto.getUrl()).timeout(5000).get();
             } catch (IOException e) {

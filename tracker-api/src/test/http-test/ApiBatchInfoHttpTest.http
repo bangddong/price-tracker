@@ -1,5 +1,5 @@
 ### 배치 정보를 조회한다.
-GET http://localhost:8080/api/batchInfo
+GET http://localhost:8080/api/batchInfo/COUPANG_PRICE
 Accept: application/json
 
 ### 배치 정보를 추가한다.

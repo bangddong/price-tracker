@@ -20,9 +20,8 @@ public class ApiScrapInfoController {
 
     @PostMapping("/scrapInfo")
     public ApiDataResponse<String> createScrapInfo(@RequestBody ScrapInfoRequest scrapInfoRequest) {
-        // TODO : forEach 저장과 일괄 저장의 성능상 차이는 ?
-        scrapInfoRequest.getPriceInfoList().forEach(scrapInfoService::createScrapInfo);
-        return ApiDataResponse.of(Boolean.toString(true));
+        boolean result = scrapInfoService.createScrapInfo(scrapInfoRequest.getPriceInfoList());
+        return ApiDataResponse.of(Boolean.toString(result));
     }
 
 
