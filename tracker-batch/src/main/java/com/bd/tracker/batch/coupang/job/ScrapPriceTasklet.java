@@ -4,6 +4,7 @@ import com.bd.tracker.core.dto.BatchInfoResponse;
 import com.bd.tracker.core.dto.BatchInfoResponseDto;
 import com.bd.tracker.core.dto.ScrapInfoDto;
 import com.bd.tracker.core.dto.ScrapInfoRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,31 +14,49 @@ import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Log4j2
 public class ScrapPriceTasklet implements Tasklet {
 
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-        WebClient webClient = WebClient.create("http://localhost:8080/api");
-        BatchInfoResponse batchInfo = webClient.get()
+        WebClient webClient = WebClient.builder()
+                .baseUrl("http://localhost:8080/api")
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                // TODO : 로그 필요할 때 사용
+//                .filter(ExchangeFilterFunction.ofResponseProcessor(
+//                        clientResponse -> clientResponse.bodyToMono(String.class)
+//                                .flatMap(body -> {
+//                                    log.error("Body is {}", body);
+//                                    return Mono.just(clientResponse);
+//                                })
+//                ))
+                .build();
+
+        BatchInfoResponse batchInfoList = webClient.get()
                 .uri(uriBuilder ->
                     uriBuilder.path("/batchInfo/COUPANG_PRICE")
                             .build()
                 )
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(BatchInfoResponse.class)
+                .bodyToMono(new ParameterizedTypeReference<BatchInfoResponse>() {})
                 .block();
 
-        if (batchInfo == null || batchInfo.getResponseDtoList().size() == 0) {
+        if (batchInfoList == null || batchInfoList.getResponseDtoList().size() == 0) {
             log.info("스크랩할 정보가 없습니다.");
             return RepeatStatus.FINISHED;
         }
@@ -45,7 +64,7 @@ public class ScrapPriceTasklet implements Tasklet {
         List<ScrapInfoDto> priceInfoList = new ArrayList<>();
         Document doc = null;
 
-        for (BatchInfoResponseDto dto : batchInfo.getResponseDtoList()) {
+        for (BatchInfoResponseDto dto : batchInfoList.getResponseDtoList()) {
             try {
                 doc = Jsoup.connect(dto.getUrl()).timeout(5000).get();
             } catch (IOException e) {
