@@ -1,5 +1,6 @@
 package com.bd.tracker.batch.coupang.job;
 
+import com.bd.tracker.batch.coupang.dto.ApiData;
 import com.bd.tracker.core.dto.BatchInfoResponse;
 import com.bd.tracker.core.dto.ScrapInfoDto;
 import com.bd.tracker.core.dto.ScrapInfoRequest;
@@ -11,7 +12,6 @@ import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -26,16 +26,17 @@ public class ScrapPriceTasklet implements Tasklet {
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         WebClient webClient = WebClient.create("http://localhost:8080/api");
-        List<BatchInfoResponse> batchInfoList = webClient.get()
+        ApiData<List<BatchInfoResponse>> response = webClient.get()
                 .uri(uriBuilder ->
-                    uriBuilder.path("/batchInfo")
-                            .queryParam("category", "COUPANG_PRICE")
+                    uriBuilder.path("/batchInfo/COUPANG_PRICE")
                             .build()
                 )
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<BatchInfoResponse>>() {})
+                .bodyToMono(ApiData.class)
                 .block();
+
+        List<BatchInfoResponse> batchInfoList = response.getData();
 
         if (batchInfoList == null || batchInfoList.size() == 0) {
             log.info("스크랩할 정보가 없습니다.");
