@@ -12,3 +12,15 @@ Content-Type: application/json
   "category": "쿠팡 가격검색",
   "productNm": "애플워치"
 }
+
+### 배치 결과를 반환한다.
+POST http://localhost:8080/api/scrapInfo
+Content-Type: application/json
+
+{
+  "url": "   ",
+  "cssQuery": "total-price",
+  "category": "쿠팡 가격검색",
+  "productNm": "애플워치"
+}
+
