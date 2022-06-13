@@ -26,6 +26,12 @@ public class ScrapPriceTasklet implements Tasklet {
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         WebClient webClient = WebClient.create("http://localhost:8080/api");
+
+        /*
+            이 Task 에서의 `data`는 무조건 List 로 내려주고 있기 때문에
+            List 로의 형 변환이 정확하여 @SuppressWarnings 처리
+         */
+        @SuppressWarnings("unchecked")
         ApiData<List<BatchInfoResponse>> response = webClient.get()
                 .uri(uriBuilder ->
                     uriBuilder.path("/batchInfo/COUPANG_PRICE")

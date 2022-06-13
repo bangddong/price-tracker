@@ -5,7 +5,6 @@ import com.bd.tracker.api.service.BatchInfoService;
 import com.bd.tracker.core.constant.ScrapCategory;
 import com.bd.tracker.core.dto.BatchInfoRequest;
 import com.bd.tracker.core.dto.BatchInfoResponse;
-import com.bd.tracker.core.dto.BatchInfoResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -23,15 +22,11 @@ public class ApiBatchInfoController {
     private final BatchInfoService batchInfoService;
 
     @GetMapping("/batchInfo/{category}")
-    public ApiDataResponse<BatchInfoResponse> getBatchInfo(@PathVariable ScrapCategory category) {
-        return ApiDataResponse.of(
-                BatchInfoResponse.of(
-                        batchInfoService.getBatchInfo(category)
-                        .stream()
-                        .map(BatchInfoResponseDto::from)
-                        .collect(Collectors.toList())
-                )
-        );
+    public ApiDataResponse<List<BatchInfoResponse>> getBatchInfo(@PathVariable ScrapCategory category) {
+        return ApiDataResponse.of(batchInfoService.getBatchInfo(category)
+                .stream()
+                .map(BatchInfoResponse::from)
+                .collect(Collectors.toList()));
     }
 
     @PostMapping("/batchInfo")
