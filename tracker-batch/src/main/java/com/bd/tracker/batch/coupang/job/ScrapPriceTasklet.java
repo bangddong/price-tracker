@@ -12,6 +12,7 @@ import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -27,22 +28,17 @@ public class ScrapPriceTasklet implements Tasklet {
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         WebClient webClient = WebClient.create("http://localhost:8080/api");
 
-        /*
-            이 Task 에서의 `data`는 무조건 List 로 내려주고 있기 때문에
-            List 로의 형 변환이 정확하여 @SuppressWarnings 처리
-         */
-        @SuppressWarnings("unchecked")
-        ApiData<List<BatchInfoResponse>> response = webClient.get()
+        ApiData<List<BatchInfoResponse>> batchInfoResponse = webClient.get()
                 .uri(uriBuilder ->
                     uriBuilder.path("/batchInfo/COUPANG_PRICE")
                             .build()
                 )
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(ApiData.class)
+                .bodyToMono(new ParameterizedTypeReference<ApiData<List<BatchInfoResponse>>>(){})
                 .block();
 
-        List<BatchInfoResponse> batchInfoList = response.getData();
+        List<BatchInfoResponse> batchInfoList = batchInfoResponse.getData();
 
         if (batchInfoList == null || batchInfoList.size() == 0) {
             log.info("스크랩할 정보가 없습니다.");
@@ -54,18 +50,18 @@ public class ScrapPriceTasklet implements Tasklet {
 
         for (BatchInfoResponse dto : batchInfoList) {
             try {
-                doc = Jsoup.connect(dto.getUrl()).timeout(5000).get();
+                doc = Jsoup.connect(dto.getUrl()).timeout(10000).get();
             } catch (IOException e) {
-                log.info("타겟 URL : {}, 접속 중 에러가 발생하였습니다. {}", dto.getUrl(), e.getMessage());
+                log.info("접속 중 에러가 발생하였습니다.\n타겟 URL : {},\n {}", dto.getUrl(), e.getMessage());
             }
             if (doc == null) {
-                log.info("타겟 URL : {}, HTML 문서를 읽지 못했습니다.", dto.getUrl());
+                log.info("HTML 문서를 읽지 못했습니다.\n타겟 URL : {}\n", dto.getUrl());
                 continue;
             }
 
             Element priceElement = doc.select(dto.getCssQuery()).last();
             if (priceElement == null) {
-                log.info("URL : {}, CssQuery : {}. css 가 존재하지 않습니다.", dto.getUrl(), dto.getCssQuery());
+                log.info("css 가 존재하지 않습니다.\nURL : {}, \nCssQuery : {}.", dto.getUrl(), dto.getCssQuery());
                 continue;
             } else if (priceElement.text().equals("원")) { // 해당 element 는 있으나 가격이 비어있는 경우가 있음
                 priceElement = doc.select(dto.getCssQuery()).first();
@@ -77,14 +73,14 @@ public class ScrapPriceTasklet implements Tasklet {
 
         ScrapInfoRequest request = new ScrapInfoRequest(priceInfoList);
 
-        Boolean success = webClient.post()
+        ApiData<String> scrapInfoResponse = webClient.post()
                 .uri("/scrapInfo")
                 .body(Mono.just(request), ScrapInfoRequest.class)
                 .retrieve()
-                .bodyToMono(Boolean.class)
+                .bodyToMono(new ParameterizedTypeReference<ApiData<String>>(){})
                 .block();
 
-        log.info("스크래핑 결과 전송 완료. {}", success);
+        log.info("스크래핑 결과 전송 완료. {}", scrapInfoResponse.getData());
 
         return RepeatStatus.FINISHED;
     }
