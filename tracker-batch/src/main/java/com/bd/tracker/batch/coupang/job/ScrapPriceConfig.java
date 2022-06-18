@@ -1,5 +1,6 @@
 package com.bd.tracker.batch.coupang.job;
 
+import com.bd.tracker.batch.service.ApiWebClientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -29,9 +30,9 @@ public class ScrapPriceConfig {
 
     @JobScope
     @Bean
-    public Step scrapPriceStep() {
+    public Step scrapPriceStep(ApiWebClientService apiWebClientService) {
         return stepBuilderFactory.get("scrapPriceStep")
-                .tasklet(new ScrapPriceTasklet())
+                .tasklet(new ScrapPriceTasklet(apiWebClientService))
                 .build();
     }
 
