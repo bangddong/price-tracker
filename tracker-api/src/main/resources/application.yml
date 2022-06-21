@@ -15,5 +15,6 @@ spring:
         default_batch_fetch_size: 100
     hibernate:
       ddl-auto: update
+    database: mysql
   thymeleaf:
     cache: false

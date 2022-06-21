@@ -4,16 +4,18 @@ import com.bd.tracker.batch.coupang.dto.ApiData;
 import com.bd.tracker.core.dto.BatchInfoResponse;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 
+@Service
 public class ApiWebClientServiceImpl implements ApiWebClientService{
 
     private final WebClient webClient;
 
     public ApiWebClientServiceImpl(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.baseUrl("http://localhoslt:8080/api").build();
+        this.webClient = webClientBuilder.baseUrl("http://localhost:8080/api").build();
     }
 
     @Override

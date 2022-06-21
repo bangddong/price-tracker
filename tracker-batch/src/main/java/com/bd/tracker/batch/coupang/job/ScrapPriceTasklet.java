@@ -1,12 +1,13 @@
 package com.bd.tracker.batch.coupang.job;
 
-import com.bd.tracker.batch.coupang.dto.ApiData;
 import com.bd.tracker.batch.service.ApiWebClientService;
 import com.bd.tracker.core.dto.BatchInfoResponse;
 import com.bd.tracker.core.dto.ScrapInfoDto;
 import com.bd.tracker.core.dto.ScrapInfoRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -14,15 +15,14 @@ import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
+import static org.asynchttpclient.Dsl.asyncHttpClient;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -56,10 +56,14 @@ public class ScrapPriceTasklet implements Tasklet {
         Document doc = null;
 
         for (BatchInfoResponse dto : batchInfoList) {
-            try {
-                doc = Jsoup.connect(dto.getUrl()).timeout(10000).get();
+            try (AsyncHttpClient client = asyncHttpClient()){
+                Future<Response> f = client.prepareGet(dto.getUrl()).addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36").execute();
+                Response resp = f.get(10, TimeUnit.SECONDS);
+                System.out.println(resp);
+
+                doc = Jsoup.connect(dto.getUrl()).timeout(10 * 1000).get();
             } catch (IOException e) {
-                log.info("접속 중 에러가 발생하였습니다.\n타겟 URL : {},\n {}", dto.getUrl(), e.getMessage());
+                log.info("접속 중 에러가 발생하였습니다.\n타겟 URL : {},\n{}", dto.getUrl(), e.getMessage());
             }
             if (doc == null) {
                 log.info("HTML 문서를 읽지 못했습니다.\n타겟 URL : {}\n", dto.getUrl());
